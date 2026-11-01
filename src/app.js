@@ -20,7 +20,7 @@ app.use("/",userRouter);
 connectDB()
 .then(()=>{
   console.log("Database connected successfully");
-  app.listen(3000,()=>{
+  app.listen(7777,()=>{
   console.log("server is running on 3000")
 });
 }).catch((err)=>{
