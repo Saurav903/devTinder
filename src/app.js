@@ -1,9 +1,9 @@
 const express = require("express");
 const connectDB = require("./config/database.js");
 const cookieParser = require("cookie-parser");
+require("dotenv").config();
 
 const app = express();  // this create instences
-
 app.use(express.json()); // which wraps up the api getting request body as json.
 app.use(cookieParser()); // to handle cookie we need this parser
 

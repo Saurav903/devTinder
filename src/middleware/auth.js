@@ -21,7 +21,7 @@ const userAuth = async(req,res,next)=>{
   if(!token){
     throw new Error("Invalid token");
   }
-  const decodedData = await jwt.verify(token,'DEV@Tinder007');
+  const decodedData = await jwt.verify(token,process.env.JWT_SECRET);
   const {_id} = decodedData;
   const user = await User.findById({_id});
   if(!user){

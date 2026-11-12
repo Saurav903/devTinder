@@ -5,7 +5,9 @@ const User = require("../model/user.js");
 
 const requestRouter = express.Router();
 
-requestRouter.post("/request/send/:status/:toUserId",userAuth,async (req,res) => {
+const sentEmail = require("../utils/sendEmail.js")
+
+requestRouter.post("/request/send/:status/:toUserId",userAuth,async (req,res,next) => {
   try {
     const fromUserId = req.user._id;
     const toUserId = req.params.toUserId;
@@ -17,9 +19,7 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async (req,res) =>
     }
 
     // Check toUser is present is DB
-    const toUser = await User.findOne({
-      toUserId
-    });
+    const toUser = await User.findById(toUserId);
 
     if(!toUser){
       return res.status(404).json({message:"User not found"})
@@ -44,16 +44,19 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async (req,res) =>
       toUserId,
       status
     });
+
     const data = await connectionRequest.save();
-    res.status(200).json({
+    const emailRes = await sentEmail.run("You got friend request from..",req.user.firstName + "is " + status + " in" + toUser.firstName);
+
+    return res.status(200).json({
       message: req.user.firstName + "is " + status + " in" + toUser.firstName,
       data
     })
 
   } catch (error) {
-    res.status(400).send("Error: "+ error.message);
+    return res.status(400).send("Error: "+ error.message);
   }
-  res.send("Connection request sent!")
+  // res.send("Connection request sent!")
 })
 
 requestRouter.post("/request/review/:status/:requestId", userAuth,async(req,res)=> {
